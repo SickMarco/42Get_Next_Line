@@ -6,49 +6,51 @@
 /*   By: mbozzi <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/09 00:21:15 by mbozzi            #+#    #+#             */
-/*   Updated: 2022/11/15 16:27:07 by mbozzi           ###   ########.fr       */
+/*   Updated: 2022/11/20 18:00:46 by mbozzi           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "get_next_line.h"
 
-char	*ft_newline(char *buff)
+char	*ft_exline(char *buff)
 {
-	char	*tmp;
-	int		len;
 	int		i;
 	int		x;
+	int		len;
+	char	*ex;
 
 	i = 0;
 	x = 0;
-	while (buff[i] && buff[i] != '\n')
+	while (buff[i] && buff[i - 1] != '\n')
 		i++;
+	if (!buff[i])
+	{
+		free(buff);
+		return (NULL);
+	}
 	len = ft_strlen(buff) - i + 1;
-	tmp = ft_calloc(sizeof(char), len);
-	if (!tmp)
+	ex = ft_calloc(sizeof(char), len);
+	if (!ex)
 		return (NULL);
 	while (buff[i])
-	{
-		tmp[x] = buff[i];
-		x++;
-		i++;
-	}
-	free (buff);
-	return (tmp);
+		ex[x++] = buff[i++];
+	free(buff);
+	return (ex);
 }
-char	*ft_exline(char *buff)
+
+char	*ft_newline(char *buff)
 {
 	char	*tmp;
 	int		i;
 
 	i = 0;
-	while (buff[i] && buff[i] != '\n')
+	if (!buff[i])
+		return (NULL);
+	while (buff[i] && buff[i - 1] != '\n')
 		i++;
 	tmp = ft_calloc(sizeof(char), i + 1);
-	if(!tmp)
-		return (NULL);
 	i = 0;
-	while (buff[i] && buff[i - 1] != '\n')
+	while (buff[i] && buff [i - 1] != '\n')
 	{
 		tmp[i] = buff[i];
 		i++;
@@ -61,16 +63,18 @@ char	*ft_read(int fd, char *buff)
 	char	*tmp;
 	int		flag;
 
-	flag = 1;
+	if (!buff)
+		buff = ft_calloc(sizeof(char), BUFFER_SIZE + 1);
 	tmp = ft_calloc(sizeof(char), BUFFER_SIZE + 1);
 	if (!tmp)
 		return (NULL);
-	while (!ft_strchr(buff, '\n') && flag != 0)
+	flag = 1;
+	while (flag > 0)
 	{
 		flag = read(fd, tmp, BUFFER_SIZE);
 		if (flag == -1)
 		{
-			free(tmp);
+			free (tmp);
 			return (NULL);
 		}
 		buff = ft_strjoin(buff, tmp);
@@ -79,17 +83,15 @@ char	*ft_read(int fd, char *buff)
 	return (buff);
 }
 
-
 char	*get_next_line(int fd)
 {
 	static char	*buff;
 	char		*line;
 
-	if(fd < 0 || BUFFER_SIZE <= 0 || read(fd, 0, 0))
+	if (fd < 0 || BUFFER_SIZE <= 0 || read(fd, 0, 0))
 		return (NULL);
-	buff = malloc(BUFFER_SIZE);
 	buff = ft_read(fd, buff);
-	line = ft_exline(buff);
-	buff = ft_newline(buff);
+	line = ft_newline(buff);
+	buff = ft_exline(buff);
 	return (line);
 }
