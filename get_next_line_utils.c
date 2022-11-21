@@ -6,7 +6,7 @@
 /*   By: mbozzi <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/15 11:39:01 by mbozzi            #+#    #+#             */
-/*   Updated: 2022/11/20 17:59:19 by mbozzi           ###   ########.fr       */
+/*   Updated: 2022/11/21 17:16:36 by mbozzi           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,7 +24,7 @@ int	ft_strlen(const char *str)
 	return (i);
 }
 
-char	*ft_strjoin(char const *s1, char const *s2)
+char	*ft_strjoin(char *s1, char *s2)
 {
 	char	*str;
 	int		len;
@@ -48,6 +48,7 @@ char	*ft_strjoin(char const *s1, char const *s2)
 		i++;
 		x++;
 	}
+	free (s1);
 	str[i] = '\0';
 	return (str);
 }
@@ -75,4 +76,16 @@ void	*ft_calloc(size_t nmemb, size_t size)
 		return (NULL);
 	ft_bzero(ptr, nmemb * size);
 	return (ptr);
+}
+
+int		ft_ncount(char *buff)
+{
+	int i;
+
+	i = 0;
+	while (buff[i] && buff[i] != '\n')
+		i++;
+	if (buff[i] == '\n')
+		i++;
+	return(i);
 }

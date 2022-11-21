@@ -6,7 +6,7 @@
 /*   By: mbozzi <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/09 00:21:15 by mbozzi            #+#    #+#             */
-/*   Updated: 2022/11/20 18:00:46 by mbozzi           ###   ########.fr       */
+/*   Updated: 2022/11/21 17:30:56 by mbozzi           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,19 +19,15 @@ char	*ft_exline(char *buff)
 	int		len;
 	char	*ex;
 
-	i = 0;
 	x = 0;
-	while (buff[i] && buff[i - 1] != '\n')
-		i++;
-	if (!buff[i])
+	i = ft_ncount(buff);
+	/*if (!buff[i])
 	{
 		free(buff);
 		return (NULL);
-	}
+	}*/
 	len = ft_strlen(buff) - i + 1;
 	ex = ft_calloc(sizeof(char), len);
-	if (!ex)
-		return (NULL);
 	while (buff[i])
 		ex[x++] = buff[i++];
 	free(buff);
@@ -46,28 +42,31 @@ char	*ft_newline(char *buff)
 	i = 0;
 	if (!buff[i])
 		return (NULL);
-	while (buff[i] && buff[i - 1] != '\n')
-		i++;
+	i = ft_ncount(buff);
 	tmp = ft_calloc(sizeof(char), i + 1);
 	i = 0;
-	while (buff[i] && buff [i - 1] != '\n')
+	while (buff[i] && buff [i] != '\n')
 	{
 		tmp[i] = buff[i];
 		i++;
 	}
+	if (buff[i] && buff[i] == '\n')
+		tmp[i++] = '\n';
 	return (tmp);
 }
 
-char	*ft_read(int fd, char *buff)
+char	*get_next_line(int fd)
 {
-	char	*tmp;
-	int		flag;
+	static char	*buff;
+	char		*line;
+	int			flag;
+	char		*tmp;
 
+	if (fd < 0 || BUFFER_SIZE <= 0 || read(fd, 0, 0))
+		return (NULL);
 	if (!buff)
 		buff = ft_calloc(sizeof(char), BUFFER_SIZE + 1);
 	tmp = ft_calloc(sizeof(char), BUFFER_SIZE + 1);
-	if (!tmp)
-		return (NULL);
 	flag = 1;
 	while (flag > 0)
 	{
@@ -80,17 +79,6 @@ char	*ft_read(int fd, char *buff)
 		buff = ft_strjoin(buff, tmp);
 	}
 	free(tmp);
-	return (buff);
-}
-
-char	*get_next_line(int fd)
-{
-	static char	*buff;
-	char		*line;
-
-	if (fd < 0 || BUFFER_SIZE <= 0 || read(fd, 0, 0))
-		return (NULL);
-	buff = ft_read(fd, buff);
 	line = ft_newline(buff);
 	buff = ft_exline(buff);
 	return (line);
