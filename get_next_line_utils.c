@@ -6,7 +6,7 @@
 /*   By: mbozzi <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/15 11:39:01 by mbozzi            #+#    #+#             */
-/*   Updated: 2022/11/21 17:16:36 by mbozzi           ###   ########.fr       */
+/*   Updated: 2022/11/24 13:20:19 by mbozzi           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -78,14 +78,16 @@ void	*ft_calloc(size_t nmemb, size_t size)
 	return (ptr);
 }
 
-int		ft_ncount(char *buff)
+int	ft_check_eol(char *buff)
 {
-	int i;
+	int x;
 
-	i = 0;
-	while (buff[i] && buff[i] != '\n')
-		i++;
-	if (buff[i] == '\n')
-		i++;
-	return(i);
+	x = 0;
+	while (buff[x])
+		{
+			if(buff[x] == '\n')
+				return(1);
+			x++;
+		}
+	return(0);
 }
