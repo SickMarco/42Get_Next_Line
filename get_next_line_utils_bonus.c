@@ -1,16 +1,16 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   get_next_line_utils.c                              :+:      :+:    :+:   */
+/*   get_next_line_utils_bonus.c                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: mbozzi <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/15 11:39:01 by mbozzi            #+#    #+#             */
-/*   Updated: 2022/11/25 18:07:48 by mbozzi           ###   ########.fr       */
+/*   Updated: 2022/11/24 15:37:16 by mbozzi           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "get_next_line.h"
+#include "get_next_line_bonus.h"
 
 int	ft_strlen(const char *str)
 {
@@ -43,9 +43,13 @@ char	*ft_strjoin(char *s1, char *s2)
 		i++;
 	}
 	while (s2[x])
-		str[i++] = s2[x++];
-	str[i] = '\0';
+	{
+		str[i] = s2[x];
+		i++;
+		x++;
+	}
 	free (s1);
+	str[i] = '\0';
 	return (str);
 }
 

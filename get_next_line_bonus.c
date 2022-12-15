@@ -1,16 +1,16 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   get_next_line.c                                    :+:      :+:    :+:   */
+/*   get_next_line_bonus.c                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: mbozzi <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/09 00:21:15 by mbozzi            #+#    #+#             */
-/*   Updated: 2022/11/25 18:07:53 by mbozzi           ###   ########.fr       */
+/*   Updated: 2022/11/24 15:51:55 by mbozzi           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "get_next_line.h"
+#include "get_next_line_bonus.h"
 
 int	ft_ncount(char *buff)
 {
@@ -40,8 +40,6 @@ char	*ft_exline(char *buff)
 	}
 	len = ft_strlen(buff) - i + 1;
 	ex = ft_calloc(sizeof(char), len);
-	if (!ex)
-		return (NULL);
 	while (buff[i])
 		ex[x++] = buff[i++];
 	free(buff);
@@ -58,8 +56,6 @@ char	*ft_newline(char *buff)
 		return (NULL);
 	i = ft_ncount(buff);
 	tmp = ft_calloc(sizeof(char), i + 1);
-	if (!tmp)
-		return (NULL);
 	i = 0;
 	while (buff[i] && buff[i] != '\n')
 	{
@@ -77,8 +73,6 @@ char	*ft_read(int fd, int *flag)
 	int			check;
 
 	tmp = ft_calloc(sizeof(char), BUFFER_SIZE + 1);
-	if (!tmp)
-		return (NULL);
 	check = read(fd, tmp, BUFFER_SIZE);
 	*flag = check;
 	if (check == -1)
@@ -91,25 +85,25 @@ char	*ft_read(int fd, int *flag)
 
 char	*get_next_line(int fd)
 {
-	static char	*buff;
+	static char	*buff[1024];
 	char		*line;
 	int			flag;
 	char		*tmp;
 
 	if (fd < 0 || BUFFER_SIZE <= 0 || read(fd, 0, 0))
 		return (NULL);
-	if (!buff)
-		buff = ft_calloc(sizeof(char), 1);
+	if (!buff[fd])
+		buff[fd] = ft_calloc(sizeof(char), 1);
 	flag = 1;
 	while (flag > 0)
 	{
 		tmp = ft_read(fd, &flag);
-		buff = ft_strjoin(buff, tmp);
+		buff[fd] = ft_strjoin(buff[fd], tmp);
 		free(tmp);
-		if (ft_check_eol(buff) == 1)
+		if (ft_check_eol(buff[fd]) == 1)
 			break ;
 	}
-	line = ft_newline(buff);
-	buff = ft_exline(buff);
+	line = ft_newline(buff[fd]);
+	buff[fd] = ft_exline(buff[fd]);
 	return (line);
 }
